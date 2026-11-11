@@ -15,38 +15,53 @@ export default function Recarga() {
 
   const [saldoAtual, setSaldoAtual] = useState(0);
   const [valorInput, setValorInput] = useState("");
-  const [cartao,setCartao] = useState("");
+  const [emailUsuario, setEmailUsuario] = useState<string | null>(null);
+  const [cartao, setCartao] = useState("");
 
   useEffect(() => {
-    AsyncStorage.getItem('@usuario_email').then((res) => {
-      if (res !== null) {
-        setSaldoAtual(parseFloat(res));
-      } else {
-        setSaldoAtual(0.0);
+    async function carregarDados() {
+      try {
+        const email = await AsyncStorage.getItem("@usuario_email");
+
+        if (email) {
+          setEmailUsuario(email);
+
+          const saldoSalvo = await AsyncStorage.getItem(`@saldo_${email}`);
+
+          if (saldoSalvo !== null) {
+            setSaldoAtual(parseFloat(saldoSalvo));
+          } else {
+            setSaldoAtual(0.0);
+          }
+        }
+      } catch (error) {
+        console.log("Erro ao carregar dados", error);
       }
-    });
+    }
+
+    carregarDados();
   }, []);
 
   const handleRecarga = async () => {
-    const recarga = parseFloat(valorInput.replace(',','.'));
+    const recarga = parseFloat(valorInput.replace(",", "."));
 
-    if (!recarga || recarga <= 0){
-        Alert.alert('Insira um valor válido!')
-        return
+    if (!recarga || recarga <= 0) {
+      Alert.alert("Insira um valor válido!");
+      return;
     }
 
     if (cartao.length !== 4) {
-        Alert.alert('Insira um formato válido de cartão!')
-        return
+      Alert.alert("Insira um formato válido de cartão!");
+      return;
     }
 
     const saldoNovo = saldoAtual + recarga;
     setSaldoAtual(saldoNovo);
 
-    await AsyncStorage.setItem('@usuario_email', saldoNovo.toString());
-    setValorInput('');
-    setCartao('');
-  }
+    await AsyncStorage.setItem(`@saldo_${emailUsuario}`, saldoNovo.toString());
+    setValorInput("");
+    setCartao("");
+  };
 
   return (
     <ScrollView>
@@ -57,19 +72,29 @@ export default function Recarga() {
           {/* aqui vai ser o saldo do usuário, que será puxado do banco de dados, por uma variável,
                     que irá ser alimentada de acorodo com o que o usuário for recarregando,
                     e também com o que ele for gastando, que será puxado do banco de dados */}
-          <Text style={styles.saldo}>R$ {saldoAtual.toFixed(2).replace('.',',')}</Text>
+          <Text style={styles.saldo}>R$ {saldoAtual.toFixed(2).replace(".", ",")}</Text>
           {/* //aqui vai ser uma conta, que calculará quantas viajens o usuário poderá fazer
                      com o saldo atual, que será puxado do banco de dados, por uma variável,
                     //que irá ser alimentada de acorodo com o que o usuário for recarregando,
                     //  e também com o que ele for gastando, que será puxado do banco de dados */}
-          <Text style={styles.subtitle}>Sufuciente para {Math.floor(saldoAtual/2)} viagens de R$ 2,00</Text>
+          <Text style={styles.subtitle}>Sufuciente para {Math.floor(saldoAtual / 2)} viagens de R$ 2,00</Text>
         </View>
         {/* Vai passar o valor digitado pelo usuário e adicionar ao saldo */}
         <View style={styles.recargaContainer}>
           <Text style={styles.label}>Digite o número do seu passe</Text>
-          <TextInput value={cartao} placeholder="(4 dígitos atrás do cartão)" onChangeText={setCartao} style={styles.input} />
+          <TextInput
+            value={cartao}
+            placeholder="(4 dígitos atrás do cartão)"
+            onChangeText={setCartao}
+            style={styles.input}
+          />
           <Text style={styles.label}>Digite o valor da recarga</Text>
-          <TextInput value={valorInput} placeholder="Digite o valor da recarga" style={styles.input} onChangeText={setValorInput}/>
+          <TextInput
+            value={valorInput}
+            placeholder="Digite o valor da recarga"
+            style={styles.input}
+            onChangeText={setValorInput}
+          />
         </View>
         <View style={styles.pagamentoContainer}>
           <Text style={styles.labelBold}> Método de pagamento</Text>
@@ -79,7 +104,11 @@ export default function Recarga() {
             <ModalInlinePix valor={valorInput} visivel={modalInlinePix} aoFechar={() => setModalInlinePix(false)} />
             <BotaoCustomizado title="Cartão de Crédito" onPress={() => setModalInlineCartao(true)} />
 
-            <ModalInlineCartao valor={valorInput} visivel={modalInlineCartao} aoFechar={() => setModalInlineCartao(false)} />
+            <ModalInlineCartao
+              valor={valorInput}
+              visivel={modalInlineCartao}
+              aoFechar={() => setModalInlineCartao(false)}
+            />
           </View>
 
           <View>

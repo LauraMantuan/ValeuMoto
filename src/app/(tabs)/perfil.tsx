@@ -1,48 +1,48 @@
-
-import React from 'react';
-
+import React, { useState, useEffect, useCallback } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  ScrollView
-} from 'react-native';
-
-import { useRouter, useGlobalSearchParams } from 'expo-router';
+  View, Text, StyleSheet, TouchableOpacity, ScrollView,} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter, useFocusEffect } from 'expo-router';
 
 export default function Perfil() {
-
   const router = useRouter();
-  const parametros = useGlobalSearchParams();
+  const [email, setEmail] = useState('');
+  const [nome, setNome] = useState('');
 
-  const email = typeof parametros.email === 'string'
-    ? parametros.email
-    : '';
+  useEffect(() => {
+    carregarDados();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      carregarDados();
+    }, [])
+  );
+
+  async function carregarDados() {
+    const emailSalvo = await AsyncStorage.getItem('@usuario_email');
+    const nomeSalvo = await AsyncStorage.getItem('@usuario_nome');
+
+    if (emailSalvo) {
+      setEmail(emailSalvo);
+    } else {
+      setEmail('');
+    }
+
+    if (nomeSalvo) {
+      setNome(nomeSalvo);
+    } else {
+      setNome('');
+    }
+  }
 
   const sair = () => {
-    Alert.alert(
-      'Sair da conta',
-      'Tem certeza que deseja sair?',
-      [
-        {
-          text: 'Cancelar',
-          style: 'cancel'
-        },
-        {
-          text: 'Sair',
-          onPress: () => router.replace('/')
-        }
-      ]
-    );
+    router.push('/');
   };
 
   return (
     <View style={styles.container}>
-
       <View style={styles.header}>
-
         <TouchableOpacity
           onPress={() => router.back()}
           style={styles.botaoVoltar}
@@ -51,26 +51,26 @@ export default function Perfil() {
         </TouchableOpacity>
 
         <Text style={styles.titulo}>Perfil</Text>
-
       </View>
 
       <ScrollView
         contentContainerStyle={styles.conteudo}
         showsVerticalScrollIndicator={false}
       >
-
         <View style={styles.cartaoPerfil}>
-
           <View style={styles.avatar}>
-            <Text style={styles.letraAvatar}>P</Text>
+            <Text style={styles.letraAvatar}>
+              {nome ? nome.charAt(0).toUpperCase() : (email ? email.charAt(0).toUpperCase() : 'P')}
+            </Text>
           </View>
 
-          <Text style={styles.nome}>Passageiro</Text>
+          <Text style={styles.nome}>
+            {nome || 'Passageiro'}
+          </Text>
 
           <Text style={styles.email}>
             {email || 'E-mail não informado'}
           </Text>
-
         </View>
 
         <View style={styles.cartaoSaldo}>
@@ -105,14 +105,12 @@ export default function Perfil() {
             Sair
           </Text>
         </TouchableOpacity>
-
       </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
     backgroundColor: '#F1F3FC',
@@ -242,5 +240,4 @@ const styles = StyleSheet.create({
     fontSize: 21,
     fontWeight: 'bold',
   },
-
 });

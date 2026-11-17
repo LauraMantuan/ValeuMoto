@@ -1,4 +1,4 @@
- import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 
 export default function LayoutTabs() {
@@ -14,7 +14,7 @@ export default function LayoutTabs() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="mapa"
         options={{
           title: 'Mapa',
           tabBarIcon: ({ color, size }) => (

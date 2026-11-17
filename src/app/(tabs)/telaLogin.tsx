@@ -39,7 +39,7 @@ export default function TelaLogin() {
 
     if (email === emailSalvo && senha === senhaSalva) {
       Alert.alert('Sucesso', 'Login realizado com sucesso!');
-      router.navigate('/(tabs)');
+      router.navigate('/(tabs)/mapa');
     } else {
       Alert.alert('Erro', 'E-mail ou senha incorretos!');
     }

@@ -51,7 +51,7 @@ export default function Index() {
     } else {
       await AsyncStorage.setItem('@usuario_email', email);
       Alert.alert('Sucesso', 'Login realizado com sucesso!');
-      router.navigate('/(tabs)');
+      router.navigate('/(tabs)/mapa');
     }
   }
 

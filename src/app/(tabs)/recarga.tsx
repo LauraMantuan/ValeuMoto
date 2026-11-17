@@ -5,10 +5,6 @@ import { BotaoCustomizado } from "../components/BotaoCustomizado";
 import { ModalInlineCartao } from "../modal/ModalInlineCartao";
 import { ModalInlinePix } from "../modal/ModalInlinePix";
 
-interface RecargaProps {
-  userEmail?: Promise<string | null>;
-}
-
 export default function Recarga() {
   const [modalInlinePix, setModalInlinePix] = useState<boolean>(false);
   const [modalInlineCartao, setModalInlineCartao] = useState<boolean>(false);

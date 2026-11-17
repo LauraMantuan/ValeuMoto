@@ -39,7 +39,7 @@ export default function CriarConta() {
         Alert.alert('Sucesso', 'Conta criada com sucesso!', [
           {
             text: 'OK',
-            onPress: () => router.navigate('/telaLogin'),
+            onPress: () => router.navigate('./index'),
           },
         ]);
       }

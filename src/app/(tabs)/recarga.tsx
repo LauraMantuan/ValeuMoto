@@ -24,6 +24,7 @@ export default function Recarga() {
 
           const saldoSalvo = await AsyncStorage.getItem(`@saldo_${email}`);
 
+
           if (saldoSalvo !== null) {
             setSaldoAtual(parseFloat(saldoSalvo));
           } else {
@@ -65,17 +66,9 @@ export default function Recarga() {
         <Text style={styles.title}>Recarga do passe</Text>
         <View style={styles.saldoContainer}>
           <Text style={styles.subtitle}>Saldo Atual</Text>
-          {/* aqui vai ser o saldo do usuário, que será puxado do banco de dados, por uma variável,
-                    que irá ser alimentada de acorodo com o que o usuário for recarregando,
-                    e também com o que ele for gastando, que será puxado do banco de dados */}
           <Text style={styles.saldo}>R$ {saldoAtual.toFixed(2).replace(".", ",")}</Text>
-          {/* //aqui vai ser uma conta, que calculará quantas viajens o usuário poderá fazer
-                     com o saldo atual, que será puxado do banco de dados, por uma variável,
-                    //que irá ser alimentada de acorodo com o que o usuário for recarregando,
-                    //  e também com o que ele for gastando, que será puxado do banco de dados */}
-          <Text style={styles.subtitle}>Sufuciente para {Math.floor(saldoAtual / 2)} viagens de R$ 2,00</Text>
+          <Text style={styles.subtitle}>Suficiente para {Math.floor(saldoAtual / 2)} viagens de R$ 2,00</Text>
         </View>
-        {/* Vai passar o valor digitado pelo usuário e adicionar ao saldo */}
         <View style={styles.recargaContainer}>
           <Text style={styles.label}>Digite o número do seu passe</Text>
           <TextInput

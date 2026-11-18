@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Perfil() {
   const router = useRouter();
@@ -21,11 +21,21 @@ export default function Perfil() {
 
   async function carregarDados() {
     const emailSalvo = await AsyncStorage.getItem("@usuario_email");
+
+    console.log("E-mail recuperado no perfil:", emailSalvo);
     const nomeSalvo = await AsyncStorage.getItem("@usuario_nome");
-    const saldoSalvo = await AsyncStorage.getItem(`@saldo_${emailSalvo}`);
+    console.log("Nome recuperado no perfil:", nomeSalvo);
 
     if (emailSalvo) {
       setEmail(emailSalvo);
+      const saldoSalvo = await AsyncStorage.getItem(`@saldo_${emailSalvo}`);
+      console.log(saldoSalvo);
+
+      if (saldoSalvo !== null) {
+        setSaldo(parseFloat(saldoSalvo));
+      } else {
+        setSaldo(0.0);
+      }
     } else {
       setEmail("");
     }
@@ -35,17 +45,11 @@ export default function Perfil() {
     } else {
       setNome("");
     }
-    if (saldoSalvo !== null) {
-      setSaldo(parseFloat(saldoSalvo));
-    } else {
-      setSaldo(0.0);
-    }
   }
 
-   const sair = async () => {
-    await AsyncStorage.multiRemove([email,nome,`@saldo_${email}`])
+  const sair = async () => {
     router.replace("/");
-    Alert.alert('Aviso', 'Você saiu de sua conta.')
+    Alert.alert("Aviso", "Você saiu de sua conta.");
   };
 
   return (
@@ -72,7 +76,7 @@ export default function Perfil() {
         </View>
 
         <View style={styles.cartaoSaldo}>
-          <Text style={styles.textoSaldo}>Saldo do passe: R$ {saldo.toFixed(2).replace('.',',')}</Text>
+          <Text style={styles.textoSaldo}>Saldo do passe: R$ {saldo.toFixed(2).replace(".", ",")}</Text>
         </View>
 
         <TouchableOpacity style={styles.botao} onPress={() => router.push("/(tabs)/recarga")}>

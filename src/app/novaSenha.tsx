@@ -18,7 +18,7 @@ export default function novaSenha() {
 });
 
 if (!fontsLoaded) {
-  return null; // or a loading indicator
+  return null; 
 }
 
 
@@ -42,7 +42,7 @@ if (!fontsLoaded) {
                 />
                 
             </View>
-            {/* onPress={() => router.navigate('') }*/}
+            {}
             <TouchableOpacity  activeOpacity={0.7} style={styles.button}>
                 <Text style={styles.buttonText}>Enviar Link</Text>
             </TouchableOpacity>
